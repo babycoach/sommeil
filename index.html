@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bip Aléatoire avec Fichier Sonore</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button id="startButton">Démarrer les Bips</button>
+    <button id="stopButton">Arrêter les Bips</button>
+    <audio id="audio" src="cloche.mp3" preload="auto"></audio>
+    <script>
+        let stopBips = false;
+
+        function bipAleatoire(dureeTotale, minIntervalle, maxIntervalle) {
+            const startTime = Date.now();
+            const audio = document.getElementById('audio');
+
+            function bip() {
+                if (Date.now() - startTime >= dureeTotale * 1000 || stopBips) {
+                    return;
+                }
+                const tempsAttente = Math.random() * (maxIntervalle - minIntervalle) + minIntervalle;
+                setTimeout(() => {
+                    if (stopBips) {
+                        return;
+                    }
+                    audio.currentTime = 0;  // Réinitialise le son au début
+                    audio.play();
+                    bip();
+                }, tempsAttente * 1000);
+            }
+            bip();
+        }
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            stopBips = false;
+            const dureeTotale = 30;  // Durée totale en secondes (modifier à volonté)
+            const minIntervalle = 1;  // Intervalle minimum en secondes
+            const maxIntervalle = 5;  // Intervalle maximum en secondes
+            bipAleatoire(dureeTotale, minIntervalle, maxIntervalle);
+        });
+
+        document.getElementById('stopButton').addEventListener('click', () => {
+            stopBips = true;
+        });
+    </script>
+</body>
+</html>
